@@ -1,0 +1,99 @@
+=======================================AKKA_HTTP_SERVICE_API_FOR_HOTEL=======================================
+
+We have api for creating users, retreiving all users, retrieving single user, deleting a user and creating apikey for the user , ratelimiting the apis 
+
+All  the apikeys have 1 hour validity 
+
+
+Ratelimiting can be changed via http.conf under the home folder , and the server has to be restarted for this to take effect. By default the global ratelimit is set as 10 seconds ie . one request per 10 seconds
+
+
+All users and apikeys are inmemory storage, so we have to add users everytime we start the server
+
+
+The server will be running in port 8080
+
+
+How to run the server?
+
+  Prerequisites:
+      Make sure have java 8 and sbt installed in your machine
+
+1. Under the home folder in command prompt/terminal , type sbt
+
+2. You will see the sbt console up and running , it will be downloading all the dependent files which is configured in build.sbt file
+
+
+3.then type "reStart" in sbt shell, you will be shown a prompt as the server is running in port 8080
+
+
+
+ApI Examples:
+
+
+Create the user:
+  
+  curl -H "Content-type: application/json" -X POST -d '{"name": "Bill", "age": 31, "countryOfResidence": "Canada"}' http://localhost:8080/users
+
+   output: {User Bill created}
+
+Retrieve all the users:
+
+   curl http://localhost:8080/users
+
+   output: {"users":[{"name":"Anonymous","age":55,"countryOfResidence":"Iceland"},{"name":"MrX","age":31,"countryOfResidence":"Canada"},{"name":"Bill","age":67,"countryOfResidence":"USA"}]}
+
+
+Get the single user detail:
+
+	curl http://localhost:8080/users/Bill
+
+	output: {"name":"Bill","age":67,"countryOfResidence":"USA"}
+
+
+Delete the user:
+
+curl -X DELETE http://localhost:8080/users/Bill
+
+    User Bill deleted.
+
+Generate apikey
+ 
+
+curl http://localhost:8080/users/{user_name}/generate_api
+
+ output:  dy2tx771rb9vuoax60ao28qw (Valid for 1 hrs) 
+
+ Note: The same apikey will be returned for the user within that 1 hour
+
+Get HotelList
+
+   Note: By default hotellist comes in ascending order of the price
+  curl http://localhost:8080/get_hotels?apikey={apikey} && city=Amsterdam
+  
+	output: Hotel(Amsterdam,13,Superior,1000)  Hotel(Amsterdam,2,Superior,2000)  Hotel(Amsterdam,4,Deluxe,2200)  Hotel(Amsterdam,26,Deluxe,2300)  Hotel(Amsterdam,23,Deluxe,5000)  Hotel(Amsterdam,9,Sweet Suite,30000)
+
+
+   For descending order:
+   curl http://localhost:8080/get_hotels?apikey={apikey} && city=Amsterdam && order=desc
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
